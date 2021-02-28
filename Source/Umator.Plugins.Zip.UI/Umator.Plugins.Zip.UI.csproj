@@ -27,9 +27,11 @@
     </Reference>
     <Reference Include="Umator.Contract">
       <HintPath>..\..\Libs\Shared\Umator.Contract.dll</HintPath>
+	    <Private>false</Private>
     </Reference>
     <Reference Include="Umator.Contract.UI">
       <HintPath>..\..\Libs\Shared\Umator.Contract.UI.dll</HintPath>
+	    <Private>false</Private>
     </Reference>
   </ItemGroup>
 

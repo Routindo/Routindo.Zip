@@ -16,6 +16,7 @@
   <ItemGroup>
     <Reference Include="Umator.Contract">
       <HintPath>..\..\Libs\Shared\Umator.Contract.dll</HintPath>
+	    <Private>false</Private>
     </Reference>
   </ItemGroup>
 

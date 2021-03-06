@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.IO.Compression;
-using NLog;
 using Umator.Contract;
+using Umator.Contract.Services;
 
 namespace Umator.Plugins.Zip.Components.ZipDirectory
 {
@@ -12,9 +12,9 @@ namespace Umator.Plugins.Zip.Components.ZipDirectory
     public class ZipDirectoryAction : IAction
     {
         public const string ComponentUniqueId = "3DA98CBC-4DAB-464C-9352-AAC85869A5BD";
-        private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
 
         public string Id { get; set; }
+        public ILoggingService LoggingService { get; set; }
 
         /// <summary>
         /// Gets or sets the output directory.
@@ -81,10 +81,10 @@ namespace Umator.Plugins.Zip.Components.ZipDirectory
                 var directoryName = new DirectoryInfo(sourceDirectory).Name;
                 if (string.IsNullOrWhiteSpace(OutputDirectory))
                 {
-                    _logger.Info($"{ZipDirectoryActionInstanceArgs.OutputDirectory} is not set.");
+                    LoggingService.Info($"{ZipDirectoryActionInstanceArgs.OutputDirectory} is not set.");
                     if (!UseLocationAsOutput)
                     {
-                        _logger.Warn(
+                        LoggingService.Warn(
                             $"[{ZipDirectoryActionInstanceArgs.UseLocationAsOutput}] is set to ({UseLocationAsOutput})");
                         throw new Exception(
                             $"Output Directory not set and it's not allowed to use location as output.");
@@ -97,11 +97,11 @@ namespace Umator.Plugins.Zip.Components.ZipDirectory
                 }
                 else
                 {
-                    _logger.Info(
+                    LoggingService.Info(
                         $"[{ZipDirectoryActionInstanceArgs.CreateOutputDirectory}] is set to ({CreateOutputDirectory})");
                     if (!Directory.Exists(OutputDirectory) && CreateOutputDirectory)
                     {
-                        _logger.Info($"Creating output directory at ({OutputDirectory})");
+                        LoggingService.Info($"Creating output directory at ({OutputDirectory})");
                         Directory.CreateDirectory(OutputDirectory);
                     }
                 }
@@ -115,14 +115,14 @@ namespace Umator.Plugins.Zip.Components.ZipDirectory
                 var outputZipPath = Path.Combine(OutputDirectory, $"{directoryName}.zip");
                 if (File.Exists(outputZipPath))
                 {
-                    _logger.Warn(
+                    LoggingService.Warn(
                         $"[{ZipDirectoryActionInstanceArgs.EraseOutputIfExists}]=({EraseOutputIfExists}) Another file with the same name already exists in the output folder ({outputZipPath})");
                     if (EraseOutputIfExists)
                     {
-                        _logger.Info(
+                        LoggingService.Info(
                             $"[{ZipDirectoryActionInstanceArgs.EraseOutputIfExists}]=({EraseOutputIfExists}) Deleting the existing file from the output folder ({outputZipPath})");
                         File.Delete(outputZipPath);
-                        _logger.Info($"Existing file deleted successfully from the output folder ({outputZipPath})");
+                        LoggingService.Info($"Existing file deleted successfully from the output folder ({outputZipPath})");
                     }
                     else
                     {
@@ -136,7 +136,7 @@ namespace Umator.Plugins.Zip.Components.ZipDirectory
             }
             catch (Exception exception)
             {
-                _logger.Error(exception);
+                LoggingService.Error(exception);
                 return ActionResult.Failed().WithException(exception);
             }
         }

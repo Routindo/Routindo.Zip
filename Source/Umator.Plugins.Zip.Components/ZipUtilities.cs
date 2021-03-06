@@ -3,21 +3,34 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using NLog;
+using Umator.Contract.Services;
 
 namespace Umator.Plugins.Zip.Components
 {
     public class ZipUtilities
     {
-        private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
+        private static readonly ILoggingService Logger;
+        private static readonly object syncObj = new object();
+        static ZipUtilities()
+        {
+            if (Logger != null)
+                return;
 
+            lock (syncObj)
+            {
+                if(Logger != null) 
+                    return;
+                Logger = ServicesContainer.ServicesProvider.GetLoggingService(nameof(ZipUtilities), typeof(ZipUtilities));
+            }
+
+        }
         public static bool AddFileToArchive(string archivePath, string file)
         {
             return AddFilesToArchive(archivePath, new List<string>() {file});
         }
 
         public static bool AddFilesToArchive(string archivePath, List<string> files)
-        { 
+        {
             try
             {
                 if (files == null || !files.Any())

@@ -4,8 +4,8 @@
 		<Authors>Younes CHEIKH</Authors>
 		<Product>Umator 2020 - Zip Plugin</Product>
 		<Copyright>Copyright © 2020 - All rights reserved</Copyright>
-    <VersionPrefix>1.0.0</VersionPrefix>
-    <VersionSuffix>alpha</VersionSuffix>
+    <VersionPrefix>1.1.0</VersionPrefix>
+    <!--<VersionSuffix>alpha</VersionSuffix>-->
 		<NeutralLanguage>en</NeutralLanguage>
 	</PropertyGroup>
 	<!--<Target Name="Version">

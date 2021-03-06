@@ -7,13 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NLog" Version="4.7.6">
-      <IncludeAssets>all</IncludeAssets>
-      <ExcludeAssets>runtime</ExcludeAssets>
-    </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
     <Reference Include="Umator.Contract">
       <HintPath>..\..\Libs\Shared\Umator.Contract.dll</HintPath>
 	    <Private>false</Private>

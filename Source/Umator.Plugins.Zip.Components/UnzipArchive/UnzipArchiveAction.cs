@@ -1,6 +1,6 @@
 ﻿using System;
-using NLog;
 using Umator.Contract;
+using Umator.Contract.Services;
 
 namespace Umator.Plugins.Zip.Components.UnzipArchive
 {
@@ -10,13 +10,14 @@ namespace Umator.Plugins.Zip.Components.UnzipArchive
     public class UnzipArchiveAction: IAction
     {
         public const string ComponentUniqueId = "ABF48A71-D1C3-4500-9913-D5E9C72BA66B";
-        private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
 
         [Argument(UnzipArchiveActionInstanceArgs.OutputDirPath)] public string OutputDirPath { get; set; } 
         [Argument(UnzipArchiveActionInstanceArgs.SourceZipPath)] public string SourceZipPath { get; set; }  
         [Argument(UnzipArchiveActionInstanceArgs.OverrideFiles)] public bool OverrideFiles { get; set; } 
 
         public string Id { get; set; }
+        public ILoggingService LoggingService { get; set; }
+
         public ActionResult Execute(ArgumentCollection arguments)
         {
             try

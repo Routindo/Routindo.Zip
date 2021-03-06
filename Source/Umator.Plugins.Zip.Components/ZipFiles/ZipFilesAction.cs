@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using NLog;
 using Umator.Contract;
+using Umator.Contract.Services;
 
 namespace Umator.Plugins.Zip.Components.ZipFiles
 {
@@ -14,9 +14,8 @@ namespace Umator.Plugins.Zip.Components.ZipFiles
     {
         public const string ComponentUniqueId = "CFF0F532-3258-41BA-A5A9-52B6990964AD";
 
-        private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
-
         public string Id { get; set; }
+        public ILoggingService LoggingService { get; set; }
         [Argument(ZipFilesActionInstanceArgs.IgnoreMissingFiles)] public bool IgnoreMissingFiles { get; set; }
         [Argument(ZipFilesActionInstanceArgs.ArchivePath)] public string ArchivePath { get; set; }
         [Argument(ZipFilesActionInstanceArgs.FilePath)] public string FilePath { get; set; }
@@ -66,7 +65,7 @@ namespace Umator.Plugins.Zip.Components.ZipFiles
 
                 if (!files.Any())
                 {
-                    _logger.Warn($"No files found to zip");
+                    LoggingService.Warn($"No files found to zip");
                     return ActionResult.Succeeded();
                 }
 

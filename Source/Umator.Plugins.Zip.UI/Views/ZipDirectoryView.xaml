@@ -77,7 +77,21 @@
                     <!--<Setter Property="Margin" Value="5" />-->
                 </Style>
             </StackPanel.Resources>
+
                 <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Label" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Label Content="Source Directory" />
+                    <TextBox Grid.Column="1" Validation.ErrorTemplate="{StaticResource ErrorControlTemplate}"
+                             Text="{Binding Path=SourceDirectory, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnValidationError=True}"
+                             d:Text="C:\Users\User\Documents" />
+                    <Button Grid.Column="2" Content="Select" Command="{Binding Path=SelectSourceDirectoryCommand}" />
+                </Grid>
+
+            <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" SharedSizeGroup="Label" />
                     <ColumnDefinition Width="*" />
@@ -87,7 +101,7 @@
                 <TextBox Grid.Column="1" Validation.ErrorTemplate="{StaticResource ErrorControlTemplate}"
                          Text="{Binding Path=OutputDirectory, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnValidationError=True}"
                          d:Text="C:\Users\User\Documents" />
-                <Button Grid.Column="2" Content="Select" Command="{Binding Path=SelectDirectoryCommand}" />
+                <Button Grid.Column="2" Content="Select" Command="{Binding Path=SelectOutputDirectoryCommand}" />
             </Grid>
 
             <Grid>
@@ -137,7 +151,7 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <Label Content="Erase Output If Exists" 
+                <Label Content="Use Parent Directory As Output" 
                        
                 />
                 <CheckBox Grid.Column="1"  HorizontalAlignment="Left"

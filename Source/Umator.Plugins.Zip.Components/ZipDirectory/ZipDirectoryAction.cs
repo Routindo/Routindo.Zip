@@ -16,14 +16,15 @@ namespace Umator.Plugins.Zip.Components.ZipDirectory
         public string Id { get; set; }
         public ILoggingService LoggingService { get; set; }
 
+        [Argument(ZipDirectoryActionInstanceArgs.SourceDirectory, false)] public string SourceDirectory { get; set; }
+
         /// <summary>
         /// Gets or sets the output directory.
         /// </summary>
         /// <value>
         /// The output directory.
         /// </value>
-        [Argument(ZipDirectoryActionInstanceArgs.OutputDirectory, false)]
-        public string OutputDirectory { get; set; }
+        [Argument(ZipDirectoryActionInstanceArgs.OutputDirectory, false)] public string OutputDirectory { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether [create output directory].
@@ -31,8 +32,7 @@ namespace Umator.Plugins.Zip.Components.ZipDirectory
         /// <value>
         ///   <c>true</c> if [create output directory]; otherwise, <c>false</c>.
         /// </value>
-        [Argument(ZipDirectoryActionInstanceArgs.CreateOutputDirectory, false)]
-        public bool CreateOutputDirectory { get; set; }
+        [Argument(ZipDirectoryActionInstanceArgs.CreateOutputDirectory, false)] public bool CreateOutputDirectory { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether [extract to same location].
@@ -40,8 +40,7 @@ namespace Umator.Plugins.Zip.Components.ZipDirectory
         /// <value>
         ///   <c>true</c> if [extract to same location]; otherwise, <c>false</c>.
         /// </value>
-        [Argument(ZipDirectoryActionInstanceArgs.UseLocationAsOutput, false)]
-        public bool UseLocationAsOutput { get; set; }
+        [Argument(ZipDirectoryActionInstanceArgs.UseLocationAsOutput, false)] public bool UseLocationAsOutput { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether [erase output if exists].
@@ -49,8 +48,7 @@ namespace Umator.Plugins.Zip.Components.ZipDirectory
         /// <value>
         ///   <c>true</c> if [erase output if exists]; otherwise, <c>false</c>.
         /// </value>
-        [Argument(ZipDirectoryActionInstanceArgs.EraseOutputIfExists, false)]
-        public bool EraseOutputIfExists { get; set; }
+        [Argument(ZipDirectoryActionInstanceArgs.EraseOutputIfExists, false)] public bool EraseOutputIfExists { get; set; }
 
         /// <summary>
         /// Executes the specified arguments.
@@ -68,11 +66,15 @@ namespace Umator.Plugins.Zip.Components.ZipDirectory
         {
             try
             {
-                // Check if Argument Directory exists
-                if (!arguments.HasArgument(ZipDirectoryActionExecutionArgs.Directory))
-                    throw new Exception($"Missing mandatory argument {ZipDirectoryActionExecutionArgs.Directory}");
 
-                var sourceDirectory = arguments[ZipDirectoryActionExecutionArgs.Directory].ToString();
+                    // Check if Argument Directory exists
+                    if (string.IsNullOrWhiteSpace(SourceDirectory) &&
+                        !arguments.HasArgument(ZipDirectoryActionExecutionArgs.Directory))
+                        throw new Exception($"Missing mandatory argument {ZipDirectoryActionExecutionArgs.Directory}");
+
+                    var sourceDirectory = string.IsNullOrWhiteSpace(SourceDirectory)
+                        ? arguments[ZipDirectoryActionExecutionArgs.Directory].ToString()
+                        : SourceDirectory;
 
                 // Check if directory exists 
                 if (!Directory.Exists(sourceDirectory))

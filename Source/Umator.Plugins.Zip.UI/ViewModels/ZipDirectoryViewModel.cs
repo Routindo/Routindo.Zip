@@ -13,34 +13,59 @@ namespace Umator.Plugins.Zip.UI.ViewModels
     public sealed class ZipDirectoryViewModel: PluginConfiguratorViewModelBase
     {
         private string _outputDirectory;
+        private string _sourceDirectory;
         private bool _createOutputDirectory = true;
         private bool _useLocationAsOutput = true;
         private bool _eraseOutputIfExists = true;
 
         public ZipDirectoryViewModel()
         {
-            this.SelectDirectoryCommand = new ActionCommand(SelectDirectory); 
+            this.SelectSourceDirectoryCommand = new ActionCommand(SelectSourceDirectory);
+            this.SelectOutputDirectoryCommand = new ActionCommand(SelectOutputDirectory);
         }
 
-        public ICommand SelectDirectoryCommand { get; }
+        public ICommand SelectSourceDirectoryCommand { get; }
+        public ICommand SelectOutputDirectoryCommand { get; }
 
-        private void SelectDirectory()
+        private void SelectSourceDirectory()
         {
+            this.SourceDirectory = SelectDirectory(SourceDirectory);
+        }
+
+        private void SelectOutputDirectory()
+        {
+            this.OutputDirectory = SelectDirectory(OutputDirectory);
+        }
+
+        private string SelectDirectory(string currentDirectory)
+        {
+            string selectedDirectory = currentDirectory;
             using (FolderBrowserDialog dialog = new FolderBrowserDialog())
             {
-                if (!string.IsNullOrWhiteSpace(OutputDirectory))
+                if (!string.IsNullOrWhiteSpace(currentDirectory))
                 {
-                    dialog.SelectedPath = OutputDirectory;
+                    dialog.SelectedPath = currentDirectory;
                 }
 
-                dialog.Description = "Directory where to watch for new files";
                 dialog.ShowNewFolderButton = true;
                 dialog.UseDescriptionForTitle = true;
                 var dialogResult = dialog.ShowDialog();
                 if (dialogResult == DialogResult.OK)
                 {
-                    OutputDirectory = dialog.SelectedPath;
+                    selectedDirectory = dialog.SelectedPath;
                 }
+            }
+
+            return selectedDirectory;
+        }
+
+        public string SourceDirectory
+        {
+            get => _sourceDirectory;
+            set
+            {
+                _sourceDirectory = value;
+                OnPropertyChanged();
             }
         }
 
@@ -54,6 +79,11 @@ namespace Umator.Plugins.Zip.UI.ViewModels
                 if (UseLocationAsOutput && !string.IsNullOrWhiteSpace(value))
                 {
                     UseLocationAsOutput = false;
+                }
+
+                if (string.IsNullOrWhiteSpace(value) && !UseLocationAsOutput)
+                {
+                    UseLocationAsOutput = true;
                 }
             }
         }
@@ -95,6 +125,7 @@ namespace Umator.Plugins.Zip.UI.ViewModels
         public override void Configure()
         {
             this.InstanceArguments = ArgumentCollection.New()
+                .WithArgument(ZipDirectoryActionInstanceArgs.SourceDirectory, SourceDirectory)
                 .WithArgument(ZipDirectoryActionInstanceArgs.OutputDirectory, OutputDirectory)
                 .WithArgument(ZipDirectoryActionInstanceArgs.CreateOutputDirectory, CreateOutputDirectory)
                 .WithArgument(ZipDirectoryActionInstanceArgs.EraseOutputIfExists, EraseOutputIfExists)
@@ -105,6 +136,9 @@ namespace Umator.Plugins.Zip.UI.ViewModels
         {
             if(arguments == null)
                 return;
+
+            if (arguments.HasArgument(ZipDirectoryActionInstanceArgs.SourceDirectory))
+                SourceDirectory = arguments.GetValue<string>(ZipDirectoryActionInstanceArgs.SourceDirectory);
 
             if (arguments.HasArgument(ZipDirectoryActionInstanceArgs.OutputDirectory))
                 OutputDirectory = arguments.GetValue<string>(ZipDirectoryActionInstanceArgs.OutputDirectory);

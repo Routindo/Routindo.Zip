@@ -10,7 +10,7 @@ namespace Umator.Plugins.Zip.Tests.U
     {
         [TestMethod]
         public void AddNoFilesToArchiveFails()
-        { 
+        {
             string zipPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".zip");
 
             Assert.IsFalse(ZipUtilities.AddFilesToArchive(zipPath, null));

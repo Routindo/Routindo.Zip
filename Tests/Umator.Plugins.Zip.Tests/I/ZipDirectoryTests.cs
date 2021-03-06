@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Umator.Contract;
+using Umator.Contract.Services;
 using Umator.Plugins.Zip.Components.ZipDirectory;
 
 namespace Umator.Plugins.Zip.Tests.I
@@ -17,7 +18,7 @@ namespace Umator.Plugins.Zip.Tests.I
                 OutputDirectory = outputDirectory,
                 CreateOutputDirectory = true,
                 EraseOutputIfExists = true, 
-                Id = PluginUtilities.GetUniqueId()
+                Id = PluginUtilities.GetUniqueId(), LoggingService = ServicesContainer.ServicesProvider.GetLoggingService(null)
             };
 
             var testDir = Path.Combine(Path.GetTempPath(), "TEMPO_TEST");
@@ -57,7 +58,8 @@ namespace Umator.Plugins.Zip.Tests.I
             IAction action = new ZipDirectoryAction()
             {
                 OutputDirectory = outputDirectory,
-                Id = PluginUtilities.GetUniqueId()
+                Id = PluginUtilities.GetUniqueId(),
+                LoggingService = ServicesContainer.ServicesProvider.GetLoggingService(null)
             };
             var testDir = Path.Combine(Path.GetTempPath(), "TEMPO_TEST");
             var actionResult = action.Execute(ArgumentCollection.New()
@@ -74,7 +76,8 @@ namespace Umator.Plugins.Zip.Tests.I
             IAction action = new ZipDirectoryAction()
             {
                 OutputDirectory = outputDirectory,
-                Id = PluginUtilities.GetUniqueId()
+                Id = PluginUtilities.GetUniqueId(),
+                LoggingService = ServicesContainer.ServicesProvider.GetLoggingService(null)
             };
             var testDir = Path.Combine(Path.GetTempPath(), "TEMPO_TEST");
             if (!Directory.Exists(testDir))
@@ -98,7 +101,8 @@ namespace Umator.Plugins.Zip.Tests.I
                 OutputDirectory = outputDirectory,
                 CreateOutputDirectory = true,
                 EraseOutputIfExists = false,
-                Id = PluginUtilities.GetUniqueId()
+                Id = PluginUtilities.GetUniqueId(),
+                LoggingService = ServicesContainer.ServicesProvider.GetLoggingService(null)
             };
             var testDir = Path.Combine(Path.GetTempPath(), "TEMPO_TEST");
             if (!Directory.Exists(testDir))
@@ -126,7 +130,8 @@ namespace Umator.Plugins.Zip.Tests.I
                 OutputDirectory = outputDirectory,
                 CreateOutputDirectory = true,
                 EraseOutputIfExists = true, 
-                Id = PluginUtilities.GetUniqueId()
+                Id = PluginUtilities.GetUniqueId(),
+                LoggingService = ServicesContainer.ServicesProvider.GetLoggingService(null)
             };
             var testDir = Path.Combine(Path.GetTempPath(), "TEMPO_TEST");
             if (!Directory.Exists(testDir))
@@ -153,7 +158,8 @@ namespace Umator.Plugins.Zip.Tests.I
             {
                 EraseOutputIfExists = true,
                 UseLocationAsOutput = true,
-                Id = PluginUtilities.GetUniqueId()
+                Id = PluginUtilities.GetUniqueId(),
+                LoggingService = ServicesContainer.ServicesProvider.GetLoggingService(null)
             };
 
             var testDir = Path.Combine(Path.GetTempPath(), "TEMPO_TEST");

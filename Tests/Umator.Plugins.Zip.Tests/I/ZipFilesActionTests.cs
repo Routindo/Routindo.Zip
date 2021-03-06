@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Umator.Contract;
+using Umator.Contract.Services;
 using Umator.Plugins.Zip.Components.ZipFiles;
 
 namespace Umator.Plugins.Zip.Tests.I
@@ -17,7 +18,10 @@ namespace Umator.Plugins.Zip.Tests.I
         [TestMethod]
         public void FailsWhenNoSourceFilesToZipTest()
         {
-            IAction action = new ZipFilesAction();
+            IAction action = new ZipFilesAction()
+            {
+                LoggingService = ServicesContainer.ServicesProvider.GetLoggingService(null)
+            };
 
             string outputZipPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".zip");
 
@@ -49,8 +53,11 @@ namespace Umator.Plugins.Zip.Tests.I
         [TestMethod]
         [Description("Fails because not output zip file is set")]
         public void FailsWhenNoOutputZipFileTest()
-        {  
-            IAction action = new ZipFilesAction();
+        {
+            IAction action = new ZipFilesAction()
+            {
+                LoggingService = ServicesContainer.ServicesProvider.GetLoggingService(null)
+            };
 
             string ticks = $"{DateTime.Now.Ticks}";
 
@@ -124,7 +131,10 @@ namespace Umator.Plugins.Zip.Tests.I
         [Description("Fails because the target files to zip not exist")]
         public void FailsWhenFilesNotExistTest()
         {
-            IAction action = new ZipFilesAction();
+            IAction action = new ZipFilesAction()
+            {
+                LoggingService = ServicesContainer.ServicesProvider.GetLoggingService(null)
+            };
 
             string ticks = $"{DateTime.Now.Ticks}";
 
@@ -209,9 +219,12 @@ namespace Umator.Plugins.Zip.Tests.I
         /// </summary>
         [TestMethod]
         [Description("Fails because the target files to zip not exist")]
-        public void SuccessWhenFilesExistTest() 
+        public void SuccessWhenFilesExistTest()
         {
-            IAction action = new ZipFilesAction();
+            IAction action = new ZipFilesAction()
+            {
+                LoggingService = ServicesContainer.ServicesProvider.GetLoggingService(null)
+            };
 
             string ticks = $"{DateTime.Now.Ticks}";
 

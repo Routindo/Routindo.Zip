@@ -4,7 +4,10 @@ Param(
     $Clean = "true",
     $Restore = "true",
     $Build = "true",
-    $Publish = "true"
+    $Publish = "true",
+    $Pack = "true",
+	$DeploymentPath = "..\_DEPLOYMENT",
+    $PluginsBuilderPath = "..\_DEPLOYMENT\PluginsBuilder\Umator.PluginsBuilder.exe"
 );
 
 $clean_publish = 1;
@@ -52,7 +55,7 @@ if($Build -eq "true") {
 
 if($Publish -eq "true") { 
     if($clean_publish -eq 1) {
-        Get-ChildItem $output -Recurse | Remove-Item
+        Get-ChildItem $output -Recurse | Remove-Item -Recurse
     }
     # Publish projects
     $projects.GETENUMERATOR() |  Sort-Object KEY  | % { 
@@ -60,4 +63,17 @@ if($Publish -eq "true") {
         $publish_command = "dotnet publish" + " " + $SourceFolder + $separator + $_.VALUE + $separator + $_.VALUE + ".csproj" + " " + "--configuration " + $configuration + " --runtime " + $runtime + " /p:DebugType=None /p:DebugSymbols=false /p:CopyLocalLockFileAssemblies=true" + " --output " + $output 
         iex $publish_command
     }
+}
+
+if($Pack -eq "true") {
+    Write-Host "Packing a new version from " $PluginName
+    $pluginLibrary = Resolve-Path $([IO.Path]::Combine($output, $projects[1] + ".dll"))
+    $pluginVersion = [System.Diagnostics.FileVersionInfo]::GetVersionInfo($pluginLibrary).ProductVersion
+    Write-Host "Target version:" + $pluginVersion
+    $PluginBuilderAbsolutePath = Resolve-Path $PluginsBuilderPath  | select -ExpandProperty Path 
+    Write-Host $PluginBuilderAbsolutePath
+    Write-Host $pluginLibrary
+    $command = $PluginBuilderAbsolutePath + " --path=" + $pluginLibrary + " --output=" + $DeploymentPath + " --manifest=true --pack=true"
+    Write-Host $command
+    iex $command;
 }

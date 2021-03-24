@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Routindo.Plugins.Zip.UI\Routindo.Plugins.Zip.UI.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Routindo.Contract">
+      <HintPath>..\..\Libs\Shared\Routindo.Contract.dll</HintPath>
+    </Reference>
+    <Reference Include="Routindo.Contract.UI">
+      <HintPath>..\..\Libs\Shared\Routindo.Contract.UI.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

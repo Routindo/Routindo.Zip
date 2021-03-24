@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>key.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="Routindo.Contract">
+      <HintPath>..\..\Libs\Shared\Routindo.Contract.dll</HintPath>
+	    <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>key.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Routindo.Plugins.Zip.Components\Routindo.Plugins.Zip.Components.csproj" />
+    <ProjectReference Include="..\Routindo.Plugins.Zip.UI\Routindo.Plugins.Zip.UI.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Routindo.Contract">
+      <HintPath>..\..\Libs\Shared\Routindo.Contract.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Routindo.Contract.UI">
+      <HintPath>..\..\Libs\Shared\Routindo.Contract.UI.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="icon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

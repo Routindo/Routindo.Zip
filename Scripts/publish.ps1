@@ -6,8 +6,8 @@ Param(
     $Build = "true",
     $Publish = "true",
     $Pack = "true",
-	$DeploymentPath = "..\..\..\_DEPLOYMENT",
-    $PluginsBuilderPath = "..\..\..\_DEPLOYMENT\PluginsBuilder\Routindo.PluginsBuilder.ConsoleApp.exe"
+	$DeploymentPath = "..\..\..\Deployment\Plugins",
+    $PluginsBuilderPath = "..\..\..\Deployment\PluginsBuilder.CLI\Routindo.PluginsBuilder.CLI.exe"
 );
 
 $clean_publish = 1;

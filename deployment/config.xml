@@ -1,0 +1,24 @@
+<Deployment>
+	<Settings>
+		<Setting Key="SourcePath" Value="../Source/" />
+		<Setting Key="DependenciesPath" Value="../Libs/Shared" />
+		<Setting Key="PublishFolder" Value="../../../Deployment/Plugins/" />
+		<Setting Key="SharedLibsFolder" Value="../../../Libs/Shared/" />
+		<Setting Key="PackFolder" Value="../../../Deployment/" />
+		<Setting Key="PluginsBuilder" Value="../../../Deployment/PluginsBuilder.CLI/Routindo.PluginsBuilder.CLI.exe" />
+	</Settings>
+	<Projects>
+		<Project Order="1" Name="Zip.Components" Share="False" Pack="False" SelfContained="False"
+		Directory="Routindo.Plugins.Zip.Components" File="Routindo.Plugins.Zip.Components.csproj" DeploymentDir="Routindo.Zip" CleanDeploymentDir="True"/>
+		
+		<Project Order="2" Name="Zip.UI" Share="False" Pack="False" SelfContained="False"
+		Directory="Routindo.Plugins.Zip.UI" File="Routindo.Plugins.Zip.UI.csproj" DeploymentDir="Routindo.Zip" CleanDeploymentDir="False"/>
+		
+		<Project Order="3" Name="Zip" Share="False" Pack="True" SelfContained="False"
+		Directory="Routindo.Plugins.Zip" File="Routindo.Plugins.Zip.csproj" DeploymentDir="Routindo.Zip" CleanDeploymentDir="False"/>
+		
+	</Projects>
+	<Dependencies>
+		<Dependency Order="1" Directory="Contract" />
+	</Dependencies>
+</Deployment>

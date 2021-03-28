@@ -7,15 +7,15 @@
   "targets": {
     ".NETCoreApp,Version=v5.0": {},
     ".NETCoreApp,Version=v5.0/win-x64": {
-      "Routindo.Contract.UI/21.0.1-preview1": {
+      "Routindo.Contract.UI/21.0.1": {
         "dependencies": {
-          "Routindo.Contract": "21.0.1-preview1"
+          "Routindo.Contract": "21.0.1"
         },
         "runtime": {
           "Routindo.Contract.UI.dll": {}
         }
       },
-      "Routindo.Contract/21.0.1-preview1": {
+      "Routindo.Contract/21.0.1": {
         "runtime": {
           "Routindo.Contract.dll": {}
         }
@@ -23,12 +23,12 @@
     }
   },
   "libraries": {
-    "Routindo.Contract.UI/21.0.1-preview1": {
+    "Routindo.Contract.UI/21.0.1": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
     },
-    "Routindo.Contract/21.0.1-preview1": {
+    "Routindo.Contract/21.0.1": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

@@ -9,7 +9,8 @@ Param(
     $SharedLibsFolder = "",
     $PackFolder = "",
     $Configuration = "Release",
-    $Runtime = "win-x64"
+    $Runtime = "win-x64",
+    $PreRelease = ""
 );
 
 $DeploymentPath = Split-Path $MyInvocation.MyCommand.Path -Parent
@@ -146,8 +147,19 @@ function Build-Project($ProjectPath) {
     dotnet build $ProjectPath --configuration $Configuration --runtime $Runtime
 }
 
+function Get-Version-Suffix($ProjectPath) {
+    $commitHash = "c$((git -C (Split-Path $ProjectPath -Parent) rev-parse HEAD).Substring(0,8))";
+    if([string]::IsNullOrEmpty($PreRelease)) {
+        return $commitHash
+    } 
+    else {
+        return "$($commitHash)+$($PreRelease)"
+    }
+}
+
 function Execute-Publish-Command ($ProjectPath, $PublishOutput, $SelfContained) {
-    dotnet publish $ProjectPath --configuration $Configuration --runtime $Runtime /p:DebugType=None /p:DebugSymbols=false /p:CopyLocalLockFileAssemblies=true --self-contained $SelfContained --output $PublishOutput | Out-Default
+	$VersionSuffix = Get-Version-Suffix -ProjectPath $ProjectPath
+    dotnet publish $ProjectPath --configuration $Configuration --runtime $Runtime /p:DebugType=None /p:DebugSymbols=false /p:CopyLocalLockFileAssemblies=true --version-suffix $VersionSuffix --self-contained $SelfContained --output $PublishOutput | Out-Default
 }
 
 function Publish-Project($ProjectPath, $Directory, $SelfContained, $Clean) {

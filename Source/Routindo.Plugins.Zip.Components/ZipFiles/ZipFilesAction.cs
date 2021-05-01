@@ -12,8 +12,8 @@ using Routindo.Contract.Services;
 namespace Routindo.Plugins.Zip.Components.ZipFiles
 {
     [ExecutionArgumentsClass(typeof(ZipFilesActionExecutionArgs))]
-    [PluginItemInfo(ComponentUniqueId, "Zip files",
-        "Create a ZIP archive from a files or append files to existing archive")]
+    [PluginItemInfo(ComponentUniqueId, nameof(ZipFilesAction),
+        "Create a ZIP archive from a files or append files to existing archive", Category = "Archive", FriendlyName = "Zip Files")]
     public class ZipFilesAction: IAction
     {
         public const string ComponentUniqueId = "CFF0F532-3258-41BA-A5A9-52B6990964AD";

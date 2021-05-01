@@ -9,8 +9,8 @@ using Routindo.Contract.Services;
 namespace Routindo.Plugins.Zip.Components.UnzipArchive
 {
     [ExecutionArgumentsClass(typeof(UnzipArchiveActionExecutionArgs))]
-    [PluginItemInfo(ComponentUniqueId, "Unzip archive",
-        "Unzip existing archive to a specific directory")]
+    [PluginItemInfo(ComponentUniqueId, nameof(UnzipArchiveAction),
+        "Unzip existing archive to a specific directory", Category = "Archive", FriendlyName = "Unzip Archive")]
     public class UnzipArchiveAction: IAction
     {
         public const string ComponentUniqueId = "ABF48A71-D1C3-4500-9913-D5E9C72BA66B";

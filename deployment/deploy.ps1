@@ -1,9 +1,9 @@
 [CmdletBinding()] 
 Param(
-	$Clean = "true",
-    $Restore = "true",
+	$Clean = "false",
+    $Restore = "false",
     $UpdateLibs = "true",
-    $Build = "true",
+    $Build = "false",
     $Publish = "true",
     $PublishFolder = "",
     $SharedLibsFolder = "",

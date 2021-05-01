@@ -10,8 +10,8 @@ using Routindo.Contract.Services;
 namespace Routindo.Plugins.Zip.Components.ZipDirectory
 {
     [ExecutionArgumentsClass(typeof(ZipDirectoryActionExecutionArgs))]
-    [PluginItemInfo(ComponentUniqueId, "Directory Zipper",
-        "Create a ZIP archive from a given directory")]
+    [PluginItemInfo(ComponentUniqueId, nameof(ZipDirectoryAction),
+        "Create a ZIP archive from a given directory", Category = "Archive", FriendlyName = "Zip Directory")]
     public class ZipDirectoryAction : IAction
     {
         public const string ComponentUniqueId = "3DA98CBC-4DAB-464C-9352-AAC85869A5BD";

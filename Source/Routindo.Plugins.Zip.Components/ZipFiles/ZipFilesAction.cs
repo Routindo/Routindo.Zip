@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Routindo.Contract;
 using Routindo.Contract.Actions;
 using Routindo.Contract.Arguments;
 using Routindo.Contract.Attributes;
@@ -25,11 +24,16 @@ namespace Routindo.Plugins.Zip.Components.ZipFiles
         [Argument(ZipFilesActionInstanceArgs.FilePath)] public string FilePath { get; set; }
         [Argument(ZipFilesActionInstanceArgs.FilesInDirectoryPath)] public string FilesInDirectoryPath { get; set; }
 
+        // Optional for After Zip
+        [Argument(ZipFilesActionInstanceArgs.DeleteZippedFiles)] public bool DeleteZippedFiles { get; set; }
+        [Argument(ZipFilesActionInstanceArgs.MoveZippedFiles)] public bool MoveZippedFiles { get; set; }
+        [Argument(ZipFilesActionInstanceArgs.MoveZippedFilesToPath)] public string MoveZippedFilesToPath { get; set; }
+
         public ActionResult Execute(ArgumentCollection arguments)
         {
+            List<string> files = null;
             try
             {
-                List<string> files = null;  
                 if (arguments.HasArgument(ZipFilesActionExecutionArgs.FilesPaths))
                 {
                     if (!(arguments[ZipFilesActionExecutionArgs.FilesPaths] is List<string> filePaths))
@@ -104,11 +108,70 @@ namespace Routindo.Plugins.Zip.Components.ZipFiles
 
                 var results = ZipUtilities.AddFilesToArchive(zipPath, files);
 
-                return results? ActionResult.Succeeded() : ActionResult.Failed();
+                if (results)
+                {
+                    if (DeleteZippedFiles)
+                    {
+                        LoggingService.Debug($"Deleting ({files.Count}) Zipped files");
+                        foreach (var file in files)
+                        {
+                            try
+                            {
+                                LoggingService.Debug($"Deleting Zipped File {file}");
+                                File.Delete(file);
+                                LoggingService.Debug($"Zipped File {file} deleted successfully");
+                            }
+                            catch (Exception exception)
+                            {
+                                LoggingService.Error(exception);
+                            }
+                        }
+                    }
+                    else if (MoveZippedFiles && !string.IsNullOrWhiteSpace(MoveZippedFilesToPath))
+                    {
+                        LoggingService.Debug($"Moving ({files.Count}) Zipped files to path {MoveZippedFilesToPath}");
+                        if (!Directory.Exists(MoveZippedFilesToPath))
+                        {
+                            Directory.CreateDirectory(MoveZippedFilesToPath);
+                        }
+
+                        foreach (var file in files)
+                        {
+                            try
+                            {
+                                var destinationFilePath = Path.Combine(MoveZippedFilesToPath, Path.GetFileName(file));
+                                LoggingService.Debug($"Moving file {file} to {destinationFilePath}");
+                                File.Move(file, destinationFilePath);
+                                LoggingService.Debug(
+                                    $"Zipped file {Path.GetFileName(file)} moved successfully to {MoveZippedFilesToPath}");
+                            }
+                            catch (Exception exception)
+                            {
+                                LoggingService.Error(exception);
+                            }
+                        }
+                    }
+
+                }
+
+                return results? ActionResult.Succeeded().WithAdditionInformation(ArgumentCollection.New()
+                    .WithArgument(ZipFilesActionResultArgs.ArchivePath, ArchivePath)
+                    .WithArgument(ZipFilesActionResultArgs.ZippedFiles, files)
+                ) : ActionResult.Failed()
+                        .WithAdditionInformation(ArgumentCollection.New()
+                            .WithArgument(ZipFilesActionResultArgs.ArchivePath, ArchivePath)
+                            .WithArgument(ZipFilesActionResultArgs.ZippedFiles, files?? new List<string>())
+                        )
+                    ;
             }
             catch (Exception exception)
             {
-                return ActionResult.Failed().WithException(exception);
+                return ActionResult.Failed().WithException(exception)
+                        .WithAdditionInformation(ArgumentCollection.New()
+                            .WithArgument(ZipFilesActionResultArgs.ArchivePath, ArchivePath)
+                            .WithArgument(ZipFilesActionResultArgs.ZippedFiles, files ?? new List<string>())
+                        )
+                    ;
             }
         }
     }

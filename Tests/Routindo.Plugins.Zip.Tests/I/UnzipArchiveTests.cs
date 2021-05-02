@@ -14,6 +14,7 @@ namespace Routindo.Plugins.Zip.Tests.I
     public class UnzipArchiveTests
     {
         [TestMethod]
+        [TestCategory("Integration Test")]
         public void UnzipArchiveSuccessfulTest()
         {
             string ticks = $"{DateTime.Now.Ticks}";
@@ -123,6 +124,7 @@ namespace Routindo.Plugins.Zip.Tests.I
         }
 
         [TestMethod]
+        [TestCategory("Integration Test")]
         public void FailsOnMissingSourceZipTest()
         {
             string ticks = $"{DateTime.Now.Ticks}";
@@ -182,6 +184,7 @@ namespace Routindo.Plugins.Zip.Tests.I
         }
 
         [TestMethod]
+        [TestCategory("Integration Test")]
         public void FailsOnMissingOutputDirTest()
         {
             string ticks = $"{DateTime.Now.Ticks}";

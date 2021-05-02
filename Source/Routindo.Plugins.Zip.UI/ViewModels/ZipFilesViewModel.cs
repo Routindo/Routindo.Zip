@@ -1,10 +1,5 @@
-﻿using System;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 using System.Windows.Input;
-using Microsoft.Xaml.Behaviors.Core;
-using Routindo.Contract;
 using Routindo.Contract.Arguments;
 using Routindo.Contract.UI;
 using Routindo.Plugins.Zip.Components.ZipFiles;
@@ -18,15 +13,20 @@ namespace Routindo.Plugins.Zip.UI.ViewModels
         private string _archivePath;
         private string _filePath;
         private string _filesInDirectoryPath;
+        private bool _deleteZippedFiles;
+        private bool _moveZippedFiles;
+        private string _moveZippedFilesToPath;
 
         public ZipFilesViewModel()
         {
-            SelectFilesSourceDirectoryCommand = new ActionCommand(SelectFilesSourceDirectory);
-            SelectSingleFileCommand = new ActionCommand(SelectSingleFile);
-            SelectArchiveFileCommand = new ActionCommand(SelectArchiveFile);
+            SelectFilesSourceDirectoryCommand = new RelayCommand(SelectFilesSourceDirectory);
+            SelectSingleFileCommand = new RelayCommand(SelectSingleFile);
+            SelectArchiveFileCommand = new RelayCommand(SelectArchiveFile);
+            SelectMovingPathDirectoryCommand = new RelayCommand(SelectMovingPathDirectory);
         }
 
         public ICommand SelectFilesSourceDirectoryCommand { get; } 
+        public ICommand SelectMovingPathDirectoryCommand { get; }
         public ICommand SelectSingleFileCommand { get; } 
         public ICommand SelectArchiveFileCommand { get; }
 
@@ -144,6 +144,68 @@ namespace Routindo.Plugins.Zip.UI.ViewModels
             }
         }
 
+        public bool DeleteZippedFiles
+        {
+            get => _deleteZippedFiles;
+            set
+            {
+                _deleteZippedFiles = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool MoveZippedFiles
+        {
+            get => _moveZippedFiles;
+            set
+            {
+                _moveZippedFiles = value;
+                if (!_moveZippedFiles)
+                    MoveZippedFilesToPath = string.Empty;
+                else if (string.IsNullOrWhiteSpace(MoveZippedFilesToPath))
+                {
+                    ClearPropertyErrors(nameof(MoveZippedFilesToPath));
+                    ValidateNonNullOrEmptyString(MoveZippedFilesToPath, nameof(MoveZippedFilesToPath));
+                }
+                OnPropertyChanged();
+            }
+        }
+
+        public bool KeepZippedFiles => !DeleteZippedFiles && !MoveZippedFiles;
+
+        public string MoveZippedFilesToPath
+        {
+            get => _moveZippedFilesToPath;
+            set
+            {
+                _moveZippedFilesToPath = value;
+                ClearPropertyErrors();
+                if(MoveZippedFiles && string.IsNullOrWhiteSpace(_moveZippedFilesToPath))
+                    ValidateNonNullOrEmptyString(_moveZippedFilesToPath);
+                OnPropertyChanged();
+            }
+        }
+
+        private void SelectMovingPathDirectory()
+        {
+            using (FolderBrowserDialog dialog = new FolderBrowserDialog())
+            {
+                if (!string.IsNullOrWhiteSpace(MoveZippedFilesToPath))
+                {
+                    dialog.SelectedPath = MoveZippedFilesToPath;
+                }
+
+                dialog.Description = "Directory where to move the zipped files";
+                dialog.ShowNewFolderButton = true;
+                dialog.UseDescriptionForTitle = true;
+                var dialogResult = dialog.ShowDialog();
+                if (dialogResult == DialogResult.OK)
+                {
+                    MoveZippedFilesToPath = dialog.SelectedPath;
+                }
+            }
+        }
+
         public override void Configure()
         {
             this.InstanceArguments = ArgumentCollection.New()
@@ -151,6 +213,9 @@ namespace Routindo.Plugins.Zip.UI.ViewModels
                     .WithArgument(ZipFilesActionInstanceArgs.ArchivePath, ArchivePath)
                     .WithArgument(ZipFilesActionInstanceArgs.FilesInDirectoryPath, FilesInDirectoryPath)
                     .WithArgument(ZipFilesActionInstanceArgs.IgnoreMissingFiles, IgnoreMissingFiles)
+                    .WithArgument(ZipFilesActionInstanceArgs.DeleteZippedFiles, DeleteZippedFiles)
+                    .WithArgument(ZipFilesActionInstanceArgs.MoveZippedFiles, MoveZippedFiles)
+                    .WithArgument(ZipFilesActionInstanceArgs.MoveZippedFilesToPath, MoveZippedFilesToPath)
                 ;
         }
 
@@ -170,6 +235,15 @@ namespace Routindo.Plugins.Zip.UI.ViewModels
 
             if (arguments.HasArgument(ZipFilesActionInstanceArgs.IgnoreMissingFiles))
                 IgnoreMissingFiles = arguments.GetValue<bool>(ZipFilesActionInstanceArgs.IgnoreMissingFiles);
+
+            if (arguments.HasArgument(ZipFilesActionInstanceArgs.DeleteZippedFiles))
+                DeleteZippedFiles = arguments.GetValue<bool>(ZipFilesActionInstanceArgs.DeleteZippedFiles);
+
+            if (arguments.HasArgument(ZipFilesActionInstanceArgs.MoveZippedFiles))
+                MoveZippedFiles = arguments.GetValue<bool>(ZipFilesActionInstanceArgs.MoveZippedFiles);
+
+            if (arguments.HasArgument(ZipFilesActionInstanceArgs.MoveZippedFilesToPath))
+                MoveZippedFilesToPath = arguments.GetValue<string>(ZipFilesActionInstanceArgs.MoveZippedFilesToPath);
         }
     }
 }

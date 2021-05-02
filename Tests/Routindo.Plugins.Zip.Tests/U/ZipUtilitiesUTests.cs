@@ -9,6 +9,7 @@ namespace Routindo.Plugins.Zip.Tests.U
     public class ZipUtilitiesUTests
     {
         [TestMethod]
+        [TestCategory("Unit Test")]
         public void AddNoFilesToArchiveFails()
         {
             string zipPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".zip");
@@ -18,6 +19,7 @@ namespace Routindo.Plugins.Zip.Tests.U
         }
 
         [TestMethod]
+        [TestCategory("Unit Test")]
         public void AddNoFileToArchiveFails()
         {
             string zipPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".zip");

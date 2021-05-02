@@ -12,6 +12,7 @@ namespace Routindo.Plugins.Zip.Tests.I
     public class ZipDirectoryTests
     {
         [TestMethod]
+        [TestCategory("Integration Test")]
         public void CreateZipFromDirectoryTest()
         {
             var outputDirectory = Path.Combine(Path.GetTempPath(), "TEST_OUTPUT");
@@ -54,6 +55,7 @@ namespace Routindo.Plugins.Zip.Tests.I
         }
 
         [TestMethod]
+        [TestCategory("Integration Test")]
         public void CreateZipFailsOnSourceDirectoryNotFoundTest()
         {
             var outputDirectory = Path.Combine(Path.GetTempPath(), "TEST_OUTPUT");
@@ -72,6 +74,7 @@ namespace Routindo.Plugins.Zip.Tests.I
         }
 
         [TestMethod]
+        [TestCategory("Integration Test")]
         public void CreateZipFailsOnOutputDirectoryNotFoundTest()
         {
             var outputDirectory = Path.Combine(Path.GetTempPath(), "TEST_OUTPUT");
@@ -95,6 +98,7 @@ namespace Routindo.Plugins.Zip.Tests.I
         }
 
         [TestMethod]
+        [TestCategory("Integration Test")]
         public void CreateZipFailsOnNoEraseExistingOptionTest()
         { 
             var outputDirectory = Path.Combine(Path.GetTempPath(), "TEST_OUTPUT");
@@ -124,6 +128,7 @@ namespace Routindo.Plugins.Zip.Tests.I
         }
 
         [TestMethod]
+        [TestCategory("Integration Test")]
         public void CreateZipWithEraseExistingOptionTest()
         {
             var outputDirectory = Path.Combine(Path.GetTempPath(), "TEST_OUTPUT");
@@ -153,6 +158,7 @@ namespace Routindo.Plugins.Zip.Tests.I
         }
 
         [TestMethod]
+        [TestCategory("Integration Test")]
         public void CreateZipOnSameExistingOptionTest()
         {
             var outputDirectory = Path.GetTempPath();

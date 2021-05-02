@@ -19,6 +19,7 @@ namespace Routindo.Plugins.Zip.Tests.I
         /// Or in Execution arguments
         /// </summary>
         [TestMethod]
+        [TestCategory("Integration Test")]
         public void FailsWhenNoSourceFilesToZipTest()
         {
             IAction action = new ZipFilesAction()
@@ -54,6 +55,7 @@ namespace Routindo.Plugins.Zip.Tests.I
         /// set in the instance or execution arguments. 
         /// </summary>
         [TestMethod]
+        [TestCategory("Integration Test")]
         [Description("Fails because not output zip file is set")]
         public void FailsWhenNoOutputZipFileTest()
         {
@@ -131,6 +133,7 @@ namespace Routindo.Plugins.Zip.Tests.I
         /// Action execution fails because the source files to zip are not existing
         /// </summary>
         [TestMethod]
+        [TestCategory("Integration Test")]
         [Description("Fails because the target files to zip not exist")]
         public void FailsWhenFilesNotExistTest()
         {
@@ -221,6 +224,7 @@ namespace Routindo.Plugins.Zip.Tests.I
         /// Action zip success with all cases 
         /// </summary>
         [TestMethod]
+        [TestCategory("Integration Test")]
         [Description("Fails because the target files to zip not exist")]
         public void SuccessWhenFilesExistTest()
         {
@@ -304,6 +308,109 @@ namespace Routindo.Plugins.Zip.Tests.I
 
             if (File.Exists(outputZip))
                 File.Delete(outputZip);
+        }
+
+        /// <summary>
+        /// Action zip success with all cases 
+        /// </summary>
+        [TestMethod]
+        [TestCategory("Integration Test")]
+        [Description("Files zipped are deleted immediately")]
+        public void DeleteZippedFilesTest()
+        {
+            IAction action = new ZipFilesAction()
+            {
+                LoggingService = ServicesContainer.ServicesProvider.GetLoggingService(nameof(ZipFilesAction)),
+                DeleteZippedFiles = true
+            };
+            
+
+            string ticks = $"{DateTime.Now.Ticks}";
+
+            string filesDirectory = Path.Combine(Path.GetTempPath(), $"dir-{ticks}");
+
+            string file1ToZip = Path.Combine(filesDirectory, $"file-1-{ticks}.txt");
+            string file2ToZip = Path.Combine(filesDirectory, $"file-1-{ticks}.txt");
+            string outputZip = Path.Combine(filesDirectory, $"output-{ticks}.zip");
+            // Create filesDirectory
+            Directory.CreateDirectory(filesDirectory);
+            Assert.IsTrue(Directory.Exists(filesDirectory));
+
+            // Create file 1
+            File.WriteAllText(file1ToZip, nameof(file1ToZip));
+            File.WriteAllText(file2ToZip, nameof(file2ToZip));
+
+            // With execution: list of files 
+            var actionResult = action.Execute(ArgumentCollection.New()
+                .WithArgument(ZipFilesActionExecutionArgs.FilesPaths, new List<string>() { file1ToZip, file2ToZip })
+                .WithArgument(ZipFilesActionExecutionArgs.ArchivePath, outputZip)
+            );
+
+            Assert.IsNotNull(actionResult);
+            Assert.IsTrue(actionResult.Result);
+            Assert.IsTrue(File.Exists(outputZip));
+            File.Delete(outputZip);
+
+            Assert.IsFalse(File.Exists(file1ToZip));
+            Assert.IsFalse(File.Exists(file2ToZip));
+
+            // CLEANUP
+            if (Directory.Exists(filesDirectory))
+                Directory.Delete(filesDirectory, true);
+
+        }
+
+        [TestMethod]
+        [TestCategory("Integration Test")]
+        [Description("Files zipped are deleted immediately")]
+        public void MoveZippedFilesTest()
+        {
+            ZipFilesAction action = new ZipFilesAction()
+            {
+                LoggingService = ServicesContainer.ServicesProvider.GetLoggingService(nameof(ZipFilesAction)),
+                MoveZippedFiles = true
+            };
+
+
+            string ticks = $"{DateTime.Now.Ticks}";
+
+            string filesDirectory = Path.Combine(Path.GetTempPath(), $"dir-{ticks}");
+            string movingDirectory = Path.Combine(filesDirectory, "moved");
+
+            action.MoveZippedFilesToPath = movingDirectory;
+
+            string file1ToZip = Path.Combine(filesDirectory, $"file-1-{ticks}.txt");
+            string file2ToZip = Path.Combine(filesDirectory, $"file-1-{ticks}.txt");
+            string outputZip = Path.Combine(filesDirectory, $"output-{ticks}.zip");
+            // Create filesDirectory
+            Directory.CreateDirectory(filesDirectory);
+            Assert.IsTrue(Directory.Exists(filesDirectory));
+
+            // Create file 1
+            File.WriteAllText(file1ToZip, nameof(file1ToZip));
+            File.WriteAllText(file2ToZip, nameof(file2ToZip));
+
+            // With execution: list of files 
+            var actionResult = action.Execute(ArgumentCollection.New()
+                .WithArgument(ZipFilesActionExecutionArgs.FilesPaths, new List<string>() { file1ToZip, file2ToZip })
+                .WithArgument(ZipFilesActionExecutionArgs.ArchivePath, outputZip)
+            );
+
+            Assert.IsNotNull(actionResult);
+            Assert.IsTrue(actionResult.Result);
+            Assert.IsTrue(File.Exists(outputZip));
+            File.Delete(outputZip);
+
+            Assert.IsFalse(File.Exists(file1ToZip));
+            Assert.IsFalse(File.Exists(file2ToZip));
+
+            Assert.IsTrue(File.Exists(Path.Combine(movingDirectory, Path.GetFileName(file1ToZip))));
+            Assert.IsTrue(File.Exists(Path.Combine(movingDirectory, Path.GetFileName(file2ToZip))));
+
+            // CLEANUP
+            if (Directory.Exists(filesDirectory))
+                Directory.Delete(filesDirectory, true);
+
         }
     }
 }

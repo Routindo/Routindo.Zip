@@ -1,10 +1,5 @@
-﻿using System;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 using System.Windows.Input;
-using Microsoft.Xaml.Behaviors.Core;
-using Routindo.Contract;
 using Routindo.Contract.Arguments;
 using Routindo.Contract.UI;
 using Routindo.Plugins.Zip.Components.ZipDirectory;
@@ -21,8 +16,8 @@ namespace Routindo.Plugins.Zip.UI.ViewModels
 
         public ZipDirectoryViewModel()
         {
-            this.SelectSourceDirectoryCommand = new ActionCommand(SelectSourceDirectory);
-            this.SelectOutputDirectoryCommand = new ActionCommand(SelectOutputDirectory);
+            this.SelectSourceDirectoryCommand = new RelayCommand(SelectSourceDirectory);
+            this.SelectOutputDirectoryCommand = new RelayCommand(SelectOutputDirectory);
         }
 
         public ICommand SelectSourceDirectoryCommand { get; }

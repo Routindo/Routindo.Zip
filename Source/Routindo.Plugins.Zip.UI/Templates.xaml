@@ -1,0 +1,24 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ControlTemplate x:Key="ErrorControlTemplate">
+
+        <Grid>
+            <Ellipse Fill="Red" Opacity="0.8" Width="15" Height="15"
+                     HorizontalAlignment="Right" VerticalAlignment="Center" 
+                     Margin="0 5 15 5"
+                     ToolTip="{Binding Path=/ErrorContent}" >
+                <Ellipse.Resources>
+                    <Style TargetType="ToolTip">
+                        <Setter Property="Foreground" Value="DarkRed"/>
+                        <Setter Property="Background" Value="LightPink"/>
+                        <Setter Property="BorderBrush" Value="DarkRed"/>
+                    </Style>
+                </Ellipse.Resources>
+            </Ellipse>
+            <AdornedElementPlaceholder x:Name="placeholder" ToolTip="{Binding Path=/ErrorContent}">
+                <Border BorderBrush="Red" BorderThickness="1" />
+            </AdornedElementPlaceholder>
+        </Grid>
+
+    </ControlTemplate>
+</ResourceDictionary>

@@ -1,10 +1,5 @@
-﻿using System;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 using System.Windows.Input;
-using Microsoft.Xaml.Behaviors.Core;
-using Routindo.Contract;
 using Routindo.Contract.Arguments;
 using Routindo.Contract.UI;
 using Routindo.Plugins.Zip.Components.UnzipArchive;
@@ -20,8 +15,8 @@ namespace Routindo.Plugins.Zip.UI.ViewModels
 
         public UnzipArchiveViewModel()
         {
-            SelectOutputDirectoryCommand = new ActionCommand(SelectOutputDirectory);
-            SelectArchiveFileCommand = new ActionCommand(SelectArchiveFile);
+            SelectOutputDirectoryCommand = new RelayCommand(SelectOutputDirectory);
+            SelectArchiveFileCommand = new RelayCommand(SelectArchiveFile);
         }
 
         public ICommand SelectOutputDirectoryCommand { get; }

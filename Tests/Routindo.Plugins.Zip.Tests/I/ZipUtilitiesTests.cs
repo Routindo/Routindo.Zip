@@ -11,6 +11,7 @@ namespace Routindo.Plugins.Zip.Tests.I
     public class ZipUtilitiesTests
     {
         [TestMethod]
+        [TestCategory("Integration Test")]
         public void AddSingleFileToExistingZipSuccessTest()
         {
             string ticks =  $"{DateTime.Now.Ticks}";
@@ -54,6 +55,7 @@ namespace Routindo.Plugins.Zip.Tests.I
         }
 
         [TestMethod]
+        [TestCategory("Integration Test")]
         public void AddSingleFileToNonExistingZipSuccessTest()
         { 
             string ticks = $"{DateTime.Now.Ticks}";
@@ -78,6 +80,7 @@ namespace Routindo.Plugins.Zip.Tests.I
         }
 
         [TestMethod]
+        [TestCategory("Integration Test")]
         public void ExtractArchiveToDirectoryTest() 
         {
             string ticks = $"{DateTime.Now.Ticks}";

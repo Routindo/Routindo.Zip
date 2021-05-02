@@ -11,27 +11,13 @@
 >
     <UserControl.Resources>
         <ResourceDictionary>
-            <ControlTemplate x:Key="ErrorControlTemplate">
-
-                <Grid>
-                    <Ellipse Fill="Red" Opacity="0.8" Width="15" Height="15"
-                             HorizontalAlignment="Right" VerticalAlignment="Center" 
-                             Margin="0 5 15 5"
-                             ToolTip="{Binding Path=/ErrorContent}" >
-                        <Ellipse.Resources>
-                            <Style TargetType="ToolTip">
-                                <Setter Property="Foreground" Value="DarkRed"/>
-                                <Setter Property="Background" Value="LightPink"/>
-                                <Setter Property="BorderBrush" Value="DarkRed"/>
-                            </Style>
-                        </Ellipse.Resources>
-                    </Ellipse>
-                    <AdornedElementPlaceholder x:Name="placeholder" ToolTip="{Binding Path=/ErrorContent}">
-                        <Border BorderBrush="Red" BorderThickness="1" />
-                    </AdornedElementPlaceholder>
-                </Grid>
-
-            </ControlTemplate>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Templates.xaml" />
+                <ResourceDictionary Source="../Styles.xaml" />
+                <ResourceDictionary>
+                    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
     <UserControl.DataContext>
@@ -43,146 +29,169 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <TextBlock Text="Zip Archive Action Configurator" FontSize="18" FontWeight="Bold" />
-        <StackPanel Grid.Row="1" Grid.IsSharedSizeScope="True" Margin="10">
-            <StackPanel.Resources>
-                <Style TargetType="Button">
-                    <Setter Property="Margin" Value="5 0" />
-                    <Setter Property="Padding" Value="5" />
-                    <Setter Property="Background" Value="Transparent" />
-                    <Setter Property="MinWidth" Value="95" />
-                </Style>
-                <Style TargetType="CheckBox">
-                    <Setter Property="VerticalAlignment"  Value="Center"/>
-                </Style>
-                <Style TargetType="RadioButton">
-                    <Setter Property="VerticalAlignment"  Value="Center"/>
-                    <Setter Property="Margin"  Value="5 0"/>
-                </Style>
-                <Style TargetType="TextBox">
-                    <Setter Property="VerticalAlignment" Value="Center" />
-                    <Setter Property="Padding" Value="1 5" />
-                </Style>
-                <Style TargetType="PasswordBox">
-                    <Setter Property="VerticalAlignment" Value="Center" />
-                    <Setter Property="VerticalContentAlignment" Value="Center" />
-                    <Setter Property="Padding" Value="1 5" />
-                </Style>
-                <Style TargetType="Label">
-                    <Setter Property="FontWeight" Value="Bold" />
-                    <Setter Property="ContentStringFormat" Value="{}{0}:" />
-                    <Setter Property="VerticalAlignment" Value="Center" />
-                    <Setter Property="Margin" Value="0 0 5 0" />
-                </Style>
-                <Style TargetType="Grid">
-                    <Setter Property="Margin" Value="0 10" />
-                </Style>
-                <Style TargetType="TextBlock">
-                    <Setter Property="VerticalAlignment" Value="Center" />
-                    <!--<Setter Property="Margin" Value="5" />-->
-                </Style>
-            </StackPanel.Resources>
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition />
-                    <RowDefinition />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" SharedSizeGroup="Label" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <Label Content="Archive Path" />
-                <TextBox Grid.Row="0" Grid.Column="1" Validation.ErrorTemplate="{StaticResource ErrorControlTemplate}"
+        <TabControl Grid.Row="1" TabStripPlacement="Left">
+            <TabItem Header="Zip">
+                <StackPanel Grid.IsSharedSizeScope="True" Margin="10">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="Label" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Label Content="Archive Path" />
+                        <TextBox Grid.Row="0" Grid.Column="1" Validation.ErrorTemplate="{StaticResource ErrorControlTemplate}"
                          Text="{Binding Path=ArchivePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnValidationError=True}"
                          d:Text="C:\Users\User\Documents" />
-                <TextBlock 
+                        <TextBlock 
                     Grid.Column="1" Grid.Row="1"
                     FontStyle="Italic"
                     Text="Target archive file to create or to append files inside" />
-                <Button Grid.Row="0" Grid.Column="2" Content="Select" Command="{Binding Path=SelectArchiveFileCommand}" />
-            </Grid>
-
-            <GroupBox Header="Files To Zip">
-                <GroupBox.HeaderTemplate>
-                    <DataTemplate >
-                        <Label Content="{Binding}" />
-                    </DataTemplate>
-                </GroupBox.HeaderTemplate>
-                <StackPanel Orientation="Vertical">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" SharedSizeGroup="Label" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <Label Content="Source" />
-                        <RadioButton x:Name="SrcSingle" Grid.Column="1" GroupName="SourceGroup" IsChecked="True" Content="Single File" />
-                        <RadioButton x:Name="SrcCollection" Grid.Column="2" GroupName="SourceGroup" IsChecked="False" Content="Collection" />
+                        <Button Grid.Row="0" Grid.Column="2" Content="Select" Command="{Binding Path=SelectArchiveFileCommand}" />
                     </Grid>
 
-                    <Grid IsEnabled="{Binding ElementName=SrcSingle, Path=IsChecked, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
-                        <Grid.RowDefinitions>
-                            <RowDefinition />
-                            <RowDefinition />
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" SharedSizeGroup="Label" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <Label Content="Single File" />
-                        <TextBox Grid.Row="0" Grid.Column="1" 
+                    <GroupBox Header="Files To Zip">
+                        <GroupBox.HeaderTemplate>
+                            <DataTemplate >
+                                <Label Content="{Binding}" />
+                            </DataTemplate>
+                        </GroupBox.HeaderTemplate>
+                        <StackPanel Orientation="Vertical">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="Label" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Label Content="Source" />
+                                <RadioButton x:Name="SrcSingle" Grid.Column="1" GroupName="SourceGroup" IsChecked="True" Content="Single File" />
+                                <RadioButton x:Name="SrcCollection" Grid.Column="2" GroupName="SourceGroup" IsChecked="False" Content="Collection" />
+                            </Grid>
+
+                            <Grid IsEnabled="{Binding ElementName=SrcSingle, Path=IsChecked, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="Label" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Label Content="Single File" />
+                                <TextBox Grid.Row="0" Grid.Column="1" 
                          Text="{Binding Path=FilePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                          d:Text="C:\Users\User\Documents" />
-                        <TextBlock 
+                                <TextBlock 
                     Grid.Column="1" Grid.Row="1"
                     FontStyle="Italic"
                     Text="Single file to append to an existing or new archive." />
-                        <Button Grid.Row="0" Grid.Column="2" Content="Select" Command="{Binding Path=SelectSingleFileCommand}" />
-                    </Grid>
+                                <Button Grid.Row="0" Grid.Column="2" Content="Select" Command="{Binding Path=SelectSingleFileCommand}" />
+                            </Grid>
 
-                    <Grid IsEnabled="{Binding ElementName=SrcCollection, Path=IsChecked, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
-                        <Grid.RowDefinitions>
-                            <RowDefinition />
-                            <RowDefinition />
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" SharedSizeGroup="Label" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <Label Content="Source Directory" />
-                        <TextBox Grid.Row="0" Grid.Column="1" 
+                            <Grid IsEnabled="{Binding ElementName=SrcCollection, Path=IsChecked, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="Label" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Label Content="Source Directory" />
+                                <TextBox Grid.Row="0" Grid.Column="1" 
                          Text="{Binding Path=FilesInDirectoryPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                          d:Text="C:\Users\User\Documents" />
-                        <TextBlock 
+                                <TextBlock 
                     Grid.Column="1" Grid.Row="1"
                     FontStyle="Italic"
                     Text="Path of source directory, that contains files to zip" />
-                        <Button Grid.Row="0" Grid.Column="2" Content="Select" Command="{Binding Path=SelectFilesSourceDirectoryCommand}" />
-                    </Grid>
-                </StackPanel>
-            </GroupBox>
+                                <Button Grid.Row="0" Grid.Column="2" Content="Select" Command="{Binding Path=SelectFilesSourceDirectoryCommand}" />
+                            </Grid>
+                        </StackPanel>
+                    </GroupBox>
 
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"   SharedSizeGroup="Label"  />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <Label Content="Ignore missing files" 
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"   SharedSizeGroup="Label"  />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Label Content="Ignore missing files" 
                        
                        />
-                <CheckBox Grid.Column="1" 
+                        <CheckBox Grid.Column="1" 
                           IsChecked="{Binding Path=IgnoreMissingFiles, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                           d:IsChecked="true" 
                 >
-                    <TextBlock
+                            <TextBlock
                                Text="If this is unchecked, the action will file if missing a file to archive."
                                FontStyle="Italic"
                     />
-                </CheckBox>
-            </Grid>
-        </StackPanel>
+                        </CheckBox>
+                    </Grid>
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="After Zip">
+                <StackPanel Orientation="Vertical">
+                    <StackPanel.Resources>
+                        <Style TargetType="RadioButton">
+                            <Setter Property="Margin" Value="10 5" />
+                        </Style>
+                    </StackPanel.Resources>
+                    <StackPanel Orientation="Horizontal">
+
+                        <RadioButton Content="None" GroupName="AfterZipAction"
+                                         IsChecked="{Binding Path=KeepZippedFiles, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                         />
+
+                        <RadioButton Content="Delete" GroupName="AfterZipAction" 
+                                                 IsChecked="{Binding Path=DeleteZippedFiles, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                        <RadioButton Content="Move" GroupName="AfterZipAction" 
+                                                 IsChecked="{Binding Path=MoveZippedFiles, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    </StackPanel>
+
+                    <StackPanel Visibility="{Binding Path=DeleteZippedFiles, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="10">
+                        <Border BorderBrush="OrangeRed" BorderThickness="1" Background="Yellow">
+                            <StackPanel Orientation="Horizontal" Margin="10">
+                                <TextBlock Text="Warning: " FontWeight="Bold" Foreground="OrangeRed" />
+                                <TextBlock Text="Files added to archive will be deleted permanently! This action cannot be undone!" Foreground="OrangeRed" />
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+
+                    <Grid Margin="10 5" 
+                                      Visibility="{Binding Path=MoveZippedFiles, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"  SharedSizeGroup="Label"/>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Label Content="Move to Directory" />
+                        <TextBox Grid.Column="1" Width="300" Validation.ErrorTemplate="{StaticResource ErrorControlTemplate}"
+                                             Text="{Binding Path=MoveZippedFilesToPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnValidationError=True}" />
+                        <Button Grid.Column="2" Content="Select Destination" Command="{Binding Path=SelectMovingPathDirectoryCommand}"/>
+                        <TextBlock Grid.Column="3" Text="Directory where to move the downloaded file" />
+                    </Grid>
+
+                    <StackPanel Visibility="{Binding Path=MoveZippedFiles, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="10">
+                        <Border BorderBrush="DarkGray" BorderThickness="1" Background="LightGray">
+                            <StackPanel Orientation="Horizontal" Margin="10">
+                                <TextBlock Text="Info: " FontWeight="Bold" Foreground="DimGray" />
+                                <TextBlock Text="Files added to archive will be moved immediately to the selected directory." Foreground="DimGray" />
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+
+                </StackPanel>
+            </TabItem>
+
+        </TabControl>
         </Grid>
 </UserControl>

@@ -1,5 +1,4 @@
 ﻿using System;
-using Routindo.Contract;
 using Routindo.Contract.Actions;
 using Routindo.Contract.Arguments;
 using Routindo.Contract.Attributes;
@@ -11,6 +10,7 @@ namespace Routindo.Plugins.Zip.Components.UnzipArchive
     [ExecutionArgumentsClass(typeof(UnzipArchiveActionExecutionArgs))]
     [PluginItemInfo(ComponentUniqueId, nameof(UnzipArchiveAction),
         "Unzip existing archive to a specific directory", Category = "Archive", FriendlyName = "Unzip Archive")]
+    [ResultArgumentsClass(typeof(UnzipArchiveActionResultsArgs))]
     public class UnzipArchiveAction: IAction
     {
         public const string ComponentUniqueId = "ABF48A71-D1C3-4500-9913-D5E9C72BA66B";
@@ -24,10 +24,10 @@ namespace Routindo.Plugins.Zip.Components.UnzipArchive
 
         public ActionResult Execute(ArgumentCollection arguments)
         {
+            string outputDirPath = null;
+            string sourceZipPath = null;
             try
             {
-                string outputDirPath = null;
-                string sourceZipPath = null;
                 if (arguments.HasArgument(UnzipArchiveActionExecutionArgs.OutputDirPath))
                 {
                     outputDirPath = arguments.GetValue<string>(UnzipArchiveActionExecutionArgs.OutputDirPath);
@@ -58,11 +58,20 @@ namespace Routindo.Plugins.Zip.Components.UnzipArchive
 
                 var result = ZipUtilities.ExtractArchive(sourceZipPath, outputDirPath, OverrideFiles);
 
-                return result ? ActionResult.Succeeded() : ActionResult.Failed();
+                return result
+                    ? ActionResult.Succeeded().WithAdditionInformation(ArgumentCollection.New()
+                        .WithArgument(UnzipArchiveActionResultsArgs.OutputDirPath, outputDirPath)
+                        .WithArgument(UnzipArchiveActionResultsArgs.SourceZipPath, sourceZipPath)
+                    )
+                    : ActionResult.Failed().WithAdditionInformation(ArgumentCollection.New()
+                        .WithArgument(UnzipArchiveActionResultsArgs.OutputDirPath, outputDirPath)
+                        .WithArgument(UnzipArchiveActionResultsArgs.SourceZipPath, sourceZipPath));
             }
             catch (Exception exception)
             {
-                return ActionResult.Failed().WithException(exception);
+                return ActionResult.Failed().WithException(exception).WithAdditionInformation(ArgumentCollection.New()
+                    .WithArgument(UnzipArchiveActionResultsArgs.OutputDirPath, outputDirPath)
+                    .WithArgument(UnzipArchiveActionResultsArgs.SourceZipPath, sourceZipPath));
             }
         }
     }

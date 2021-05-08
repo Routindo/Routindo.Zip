@@ -12,6 +12,7 @@ namespace Routindo.Plugins.Zip.Components.ZipDirectory
     [ExecutionArgumentsClass(typeof(ZipDirectoryActionExecutionArgs))]
     [PluginItemInfo(ComponentUniqueId, nameof(ZipDirectoryAction),
         "Create a ZIP archive from a given directory", Category = "Archive", FriendlyName = "Zip Directory")]
+    [ResultArgumentsClass(typeof(ZipDirectoryActionResultsArgs))]
     public class ZipDirectoryAction : IAction
     {
         public const string ComponentUniqueId = "3DA98CBC-4DAB-464C-9352-AAC85869A5BD";
@@ -19,7 +20,8 @@ namespace Routindo.Plugins.Zip.Components.ZipDirectory
         public string Id { get; set; }
         public ILoggingService LoggingService { get; set; }
 
-        [Argument(ZipDirectoryActionInstanceArgs.SourceDirectory, false)] public string SourceDirectory { get; set; }
+        [Argument(ZipDirectoryActionInstanceArgs.SourceDirectory, false)]
+        public string SourceDirectory { get; set; }
 
         /// <summary>
         /// Gets or sets the output directory.
@@ -27,7 +29,8 @@ namespace Routindo.Plugins.Zip.Components.ZipDirectory
         /// <value>
         /// The output directory.
         /// </value>
-        [Argument(ZipDirectoryActionInstanceArgs.OutputDirectory, false)] public string OutputDirectory { get; set; }
+        [Argument(ZipDirectoryActionInstanceArgs.OutputDirectory, false)]
+        public string OutputDirectory { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether [create output directory].
@@ -35,7 +38,8 @@ namespace Routindo.Plugins.Zip.Components.ZipDirectory
         /// <value>
         ///   <c>true</c> if [create output directory]; otherwise, <c>false</c>.
         /// </value>
-        [Argument(ZipDirectoryActionInstanceArgs.CreateOutputDirectory, false)] public bool CreateOutputDirectory { get; set; }
+        [Argument(ZipDirectoryActionInstanceArgs.CreateOutputDirectory, false)]
+        public bool CreateOutputDirectory { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether [extract to same location].
@@ -43,7 +47,8 @@ namespace Routindo.Plugins.Zip.Components.ZipDirectory
         /// <value>
         ///   <c>true</c> if [extract to same location]; otherwise, <c>false</c>.
         /// </value>
-        [Argument(ZipDirectoryActionInstanceArgs.UseLocationAsOutput, false)] public bool UseLocationAsOutput { get; set; }
+        [Argument(ZipDirectoryActionInstanceArgs.UseLocationAsOutput, false)]
+        public bool UseLocationAsOutput { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether [erase output if exists].
@@ -51,7 +56,8 @@ namespace Routindo.Plugins.Zip.Components.ZipDirectory
         /// <value>
         ///   <c>true</c> if [erase output if exists]; otherwise, <c>false</c>.
         /// </value>
-        [Argument(ZipDirectoryActionInstanceArgs.EraseOutputIfExists, false)] public bool EraseOutputIfExists { get; set; }
+        [Argument(ZipDirectoryActionInstanceArgs.EraseOutputIfExists, false)]
+        public bool EraseOutputIfExists { get; set; }
 
         /// <summary>
         /// Executes the specified arguments.
@@ -67,17 +73,18 @@ namespace Routindo.Plugins.Zip.Components.ZipDirectory
         /// </exception>
         public ActionResult Execute(ArgumentCollection arguments)
         {
+            string outputZipPath = null;
+            string sourceDirectory = null;
             try
             {
+                // Check if Argument Directory exists
+                if (string.IsNullOrWhiteSpace(SourceDirectory) &&
+                    !arguments.HasArgument(ZipDirectoryActionExecutionArgs.Directory))
+                    throw new Exception($"Missing mandatory argument {ZipDirectoryActionExecutionArgs.Directory}");
 
-                    // Check if Argument Directory exists
-                    if (string.IsNullOrWhiteSpace(SourceDirectory) &&
-                        !arguments.HasArgument(ZipDirectoryActionExecutionArgs.Directory))
-                        throw new Exception($"Missing mandatory argument {ZipDirectoryActionExecutionArgs.Directory}");
-
-                    var sourceDirectory = string.IsNullOrWhiteSpace(SourceDirectory)
-                        ? arguments[ZipDirectoryActionExecutionArgs.Directory].ToString()
-                        : SourceDirectory;
+                sourceDirectory = string.IsNullOrWhiteSpace(SourceDirectory)
+                    ? arguments[ZipDirectoryActionExecutionArgs.Directory].ToString()
+                    : SourceDirectory;
 
                 // Check if directory exists 
                 if (!Directory.Exists(sourceDirectory))
@@ -117,7 +124,7 @@ namespace Routindo.Plugins.Zip.Components.ZipDirectory
                         $"Output Directory not found ({OutputDirectory})");
                 }
 
-                var outputZipPath = Path.Combine(OutputDirectory, $"{directoryName}.zip");
+                outputZipPath = Path.Combine(OutputDirectory, $"{directoryName}.zip");
                 if (File.Exists(outputZipPath))
                 {
                     LoggingService.Warn(
@@ -127,7 +134,8 @@ namespace Routindo.Plugins.Zip.Components.ZipDirectory
                         LoggingService.Info(
                             $"[{ZipDirectoryActionInstanceArgs.EraseOutputIfExists}]=({EraseOutputIfExists}) Deleting the existing file from the output folder ({outputZipPath})");
                         File.Delete(outputZipPath);
-                        LoggingService.Info($"Existing file deleted successfully from the output folder ({outputZipPath})");
+                        LoggingService.Info(
+                            $"Existing file deleted successfully from the output folder ({outputZipPath})");
                     }
                     else
                     {
@@ -137,12 +145,18 @@ namespace Routindo.Plugins.Zip.Components.ZipDirectory
 
                 ZipFile.CreateFromDirectory(sourceDirectory, outputZipPath);
 
-                return ActionResult.Succeeded();
+                return ActionResult.Succeeded().WithAdditionInformation(ArgumentCollection.New()
+                    .WithArgument(ZipDirectoryActionResultsArgs.SourceDirectory, sourceDirectory)
+                    .WithArgument(ZipDirectoryActionResultsArgs.OutputZipPath, outputZipPath)
+                );
             }
             catch (Exception exception)
             {
                 LoggingService.Error(exception);
-                return ActionResult.Failed().WithException(exception);
+                return ActionResult.Failed(exception).WithAdditionInformation(ArgumentCollection.New()
+                    .WithArgument(ZipDirectoryActionResultsArgs.SourceDirectory, sourceDirectory)
+                    .WithArgument(ZipDirectoryActionResultsArgs.OutputZipPath, outputZipPath)
+                );
             }
         }
     }

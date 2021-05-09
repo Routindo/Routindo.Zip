@@ -7,7 +7,7 @@
   "targets": {
     ".NETCoreApp,Version=v5.0": {},
     ".NETCoreApp,Version=v5.0/win-x64": {
-      "Routindo.Contract/21.0.5-caa4b9c21": {
+      "Routindo.Contract/21.1.0-c540bcbc4": {
         "runtime": {
           "Routindo.Contract.dll": {}
         }
@@ -15,7 +15,7 @@
     }
   },
   "libraries": {
-    "Routindo.Contract/21.0.5-caa4b9c21": {
+    "Routindo.Contract/21.1.0-c540bcbc4": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
